@@ -5,74 +5,59 @@ import Card from "@/components/Card";
 import Form from "@/components/Form";
 import TextField from "@/components/TextField";
 import Button from "@/components/Button";
-import Modal from "@/components/Modal";
-import { useActionState } from "react";
-import { useFormStatus } from "react-dom";
-import { signupAction, SignupState } from "./actions";
-import Link from "next/link";
 import LinkText from "@/components/LinkText";
-
-function SignupButton() {
-  const { pending } = useFormStatus();
-  return (
-    <Button
-      type="submit"
-      variant="primary"
-      size="md"
-      fullWidth
-      isLoading={pending}
-      className="mb-4"
-    >
-      {pending ? "Signing up..." : "Sign up"}
-    </Button>
-  );
-}
+import { useAuth } from "@/contexts/AuthContext";
+import { useState, FormEvent } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SignUpPage() {
-  const [state, formAction] = useActionState<SignupState, FormData>(
-    signupAction,
-    {},
-  );
+  const { signup } = useAuth();
+  const router = useRouter();
+  const [error, setError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const SuccessModal = () => {
-    return (
-      <Modal isOpen={state.success === true}>
-        <div className="flex flex-col items-center text-center p-4 w-[278px]">
-          <img
-            width={173}
-            height={30}
-            src="/images/logo.svg"
-          />
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
 
-          <img
-            src="/images/success.svg"
-            className="h-auto w-auto"
-          />
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const name = formData.get("name") as string;
+    const password = formData.get("password") as string;
+    const confirmPassword = formData.get("confirm-password") as string;
 
-          <p className="text-gray-600 mb-6">
-            We’ve just sent you an email to confirm your sign up!
-          </p>
+    if (
+      !email.trim() ||
+      !name.trim() ||
+      !password.trim() ||
+      !confirmPassword.trim()
+    ) {
+      setError("All fields are required");
+      setIsLoading(false);
+      return;
+    }
 
-          <Link
-            href="/login"
-            className="w-full"
-          >
-            <Button
-              variant="primary"
-              size="md"
-              fullWidth
-            >
-              Go to Login
-            </Button>
-          </Link>
-        </div>
-      </Modal>
-    );
+    if (password !== confirmPassword) {
+      setError("Passwords don't match");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      await signup(email, name, password, confirmPassword);
+      router.push("/dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Signup failed");
+    } finally {
+      setIsLoading(false);
+    }
   };
+
   return (
     <AuthLayout>
       <Card>
-        <Form action={formAction}>
+        <Form onSubmit={handleSubmit}>
           <div className="flex justify-center p-8">
             <img
               width={173}
@@ -106,10 +91,21 @@ export default function SignUpPage() {
             type="password"
           />
 
-          {state.error && <p className="text-red-600 pb-4"> {state.error}</p>}
-          <SignupButton />
+          {error && <p className="text-red-600 pb-4"> {error}</p>}
+
+          <Button
+            type="submit"
+            variant="primary"
+            size="md"
+            fullWidth
+            isLoading={isLoading}
+            className="mb-4"
+          >
+            {isLoading ? "Signing up..." : "Sign up"}
+          </Button>
+
           <p className="text-center">
-            By signing up, you accept the{" "}
+            By signing up, you accept the
             <LinkText href="/data-policy"> Data Policy </LinkText>
             and the
             <LinkText href="/cookies-policy"> Cookies Policy.</LinkText>
@@ -124,7 +120,6 @@ export default function SignUpPage() {
           </Button>
         </Form>
       </Card>
-      <SuccessModal />
     </AuthLayout>
   );
 }
