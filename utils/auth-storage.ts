@@ -1,6 +1,6 @@
 import { storage } from "./storage";
 
-const TOKEN_KEYS = {
+export const TOKEN_KEYS = {
   ACCESS_TOKEN: "access-token",
   CLIENT: "client",
   UID: "uid",

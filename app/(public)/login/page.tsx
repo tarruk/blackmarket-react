@@ -7,16 +7,19 @@ import AuthLayout from "@/components/AuthLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { useErrorHandler } from "@/hooks";
+import { useToastContext } from "@/contexts/ToastContext";
 
 export default function LoginPage() {
   const { login } = useAuth();
   const router = useRouter();
-  const [error, setError] = useState<string>("");
+  const { error, handleError, clearError } = useErrorHandler();
+  const { showError, showSuccess } = useToastContext();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError("");
+    clearError();
     setIsLoading(true);
 
     const formData = new FormData(e.currentTarget);
@@ -24,16 +27,20 @@ export default function LoginPage() {
     const password = formData.get("password") as string;
 
     if (!email.trim() || !password.trim()) {
-      setError("Email and password are required");
+      const errorMsg = "Email and password are required";
+      handleError(errorMsg);
+      showError(errorMsg);
       setIsLoading(false);
       return;
     }
 
     try {
       await login(email, password);
+      showSuccess("Login successful! Redirecting...");
       router.push("/dashboard");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
+      handleError(err);
+      showError(err);
     } finally {
       setIsLoading(false);
     }

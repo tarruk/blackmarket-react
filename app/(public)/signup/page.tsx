@@ -9,16 +9,19 @@ import LinkText from "@/components/LinkText";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { useErrorHandler } from "@/hooks";
+import { useToastContext } from "@/contexts/ToastContext";
 
 export default function SignUpPage() {
   const { signup } = useAuth();
   const router = useRouter();
-  const [error, setError] = useState<string>("");
+  const { error, handleError, clearError } = useErrorHandler();
+  const { showError, showSuccess } = useToastContext();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError("");
+    clearError();
     setIsLoading(true);
 
     const formData = new FormData(e.currentTarget);
@@ -33,22 +36,28 @@ export default function SignUpPage() {
       !password.trim() ||
       !confirmPassword.trim()
     ) {
-      setError("All fields are required");
+      const errorMsg = "All fields are required";
+      handleError(errorMsg);
+      showError(errorMsg);
       setIsLoading(false);
       return;
     }
 
     if (password !== confirmPassword) {
-      setError("Passwords don't match");
+      const errorMsg = "Passwords don't match";
+      handleError(errorMsg);
+      showError(errorMsg);
       setIsLoading(false);
       return;
     }
 
     try {
       await signup(email, name, password, confirmPassword);
+      showSuccess("Account created successfully! Redirecting...");
       router.push("/dashboard");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Signup failed");
+      handleError(err);
+      showError(err);
     } finally {
       setIsLoading(false);
     }

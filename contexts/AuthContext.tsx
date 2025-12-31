@@ -10,6 +10,7 @@ import {
 import { User } from "@/types/user.types";
 import { LoginResponse, AuthContextType } from "@/types/auth.types";
 import { authStorage } from "@/utils/auth-storage";
+import { ApiError } from "@/utils/api-error";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -73,7 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
 
     if (!response.ok) {
-      throw new Error("Login failed");
+      throw await ApiError.fromResponse(response);
     }
 
     authStorage.saveTokens(response.headers);
@@ -106,8 +107,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.errors?.full_messages?.[0] || "Signup failed");
+      throw await ApiError.fromResponse(response);
     }
 
     authStorage.saveTokens(response.headers);
