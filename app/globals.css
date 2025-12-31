@@ -1,12 +1,17 @@
 @import "tailwindcss";
 
-/* Estilos base */
 body {
   color: #000000;
   background-color: #ffffff;
 }
 
-/* Animaciones */
+@theme {
+  --color-search-bar-background: #e0e0e0;
+  --color-product-card-border: #636363;
+  --color-primary-blue: #2751b9;
+  --color-primary-green: #559f21;
+}
+
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -20,4 +25,45 @@ body {
 
 .animate-fade-in {
   animation: fade-in 0.3s ease-out;
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-out-right {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s ease-out;
+}
+
+.animate-slide-out-right {
+  animation: slide-out-right 0.3s ease-out;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
