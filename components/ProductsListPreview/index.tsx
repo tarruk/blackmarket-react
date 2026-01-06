@@ -62,8 +62,8 @@ export default function ProductsListPreview() {
   }
 
   return (
-    <div className="relative z-10 container mx-auto sm:gap-4 justify-between items-center max-w-7xl gap-4 py-3 px-6 lg:px-20">
-      <div className="sm:hidden mb-6">
+    <div className=" sm:gap-4 justify-between items-center gap-8 py-3  lg:px-20">
+      <div className="sm:hidden mb-6 px-6">
         <div className="grid grid-flow-col auto-cols-[280px] gap-4 overflow-x-auto pb-4 -mx-6 px-6 scrollbar-hide">
           {products.map((product) => (
             <ProductCard
@@ -76,7 +76,7 @@ export default function ProductsListPreview() {
         </div>
       </div>
 
-      <div className="hidden sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
+      <div className="hidden sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6 sm:px-10 lg:px-0">
         {products.map((product) => (
           <ProductCard
             key={product.id}

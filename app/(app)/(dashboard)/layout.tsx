@@ -1,10 +1,13 @@
 "use client";
-
+import Footer from "@/components/Footer";
 import NavBar from "@/components/NavBar";
-import ProductsListPreview from "@/components/ProductsListPreview";
 import { useRouter } from "next/navigation";
 
-export default function DashboardPage() {
+export default function DashboardLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   const router = useRouter();
 
   const handleSearch = (query: string) => {
@@ -14,12 +17,10 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col bg-white gap-5">
-      <div className="h-[300px] fixed inset-0 z-0 bg-black"></div>
+    <div className="min-h-screen w-full flex flex-col bg-white">
       <NavBar onSearch={handleSearch} />
-      <div className="">
-        <ProductsListPreview />
-      </div>
+      {children}
+      <Footer />
     </div>
   );
 }

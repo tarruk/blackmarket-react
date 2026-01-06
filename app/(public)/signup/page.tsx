@@ -54,7 +54,7 @@ export default function SignUpPage() {
     try {
       await signup(email, name, password, confirmPassword);
       showSuccess("Account created successfully! Redirecting...");
-      router.push("/dashboard");
+      router.push("/");
     } catch (err) {
       handleError(err);
       showError(err);

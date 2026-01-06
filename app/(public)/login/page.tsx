@@ -37,7 +37,7 @@ export default function LoginPage() {
     try {
       await login(email, password);
       showSuccess("Login successful! Redirecting...");
-      router.push("/dashboard");
+      router.push("/");
     } catch (err) {
       handleError(err);
       showError(err);
