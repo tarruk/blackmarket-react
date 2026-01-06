@@ -6,11 +6,11 @@ export default function Logo({ className }: LogoProps) {
   return (
     <svg
       width="173"
-      height="19"
+      height="30"
       viewBox="0 0 173 30"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={className}
+      className={`${className} block`}
     >
       <path
         d="M12.6596 0H0V6L11.6788 6C17.8153 6 19.8766 10.7857 20.1711 12.5714C20.8919 11.3483 21.3376 9.92986 21.3376 8.42001C21.3376 3.76977 17.4523 0 12.6596 0Z"

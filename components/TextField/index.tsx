@@ -24,7 +24,7 @@ const TextField = (props: TextFieldProps) => {
         <input
           {...inputProps}
           type={isPassword ? (passwordVisible ? "text" : "password") : type}
-          className="flex-1 outline-none border-none bg-transparent"
+          className="flex-1 outline-none border-none bg-transparent placeholder:text-gray-500 text-black"
         />
         {isPassword && (
           <button
