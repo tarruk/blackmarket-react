@@ -3,23 +3,48 @@
 import TextField from "@/components/TextField";
 import Link from "next/link";
 import Card from "@/components/Card";
-import { loginAction, LoginState } from "./actions";
-import { useActionState } from "react";
 import AuthLayout from "@/components/AuthLayout";
+import { useAuth } from "@/contexts/AuthContext";
+import { useState, FormEvent } from "react";
+import { useRouter } from "next/navigation";
 
-const initialState: LoginState = {};
 export default function LoginPage() {
-  const [state, formAction] = useActionState<LoginState, FormData>(
-    loginAction,
-    initialState,
-  );
+  const { login } = useAuth();
+  const router = useRouter();
+  const [error, setError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    if (!email.trim() || !password.trim()) {
+      setError("Email and password are required");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      await login(email, password);
+      router.push("/dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Login failed");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <AuthLayout>
       <Card>
         <form
           className="flex flex-col w-full"
-          action={formAction}
+          onSubmit={handleSubmit}
         >
           <div className="flex justify-center p-8">
             <img
@@ -42,12 +67,13 @@ export default function LoginPage() {
             type="password"
           />
 
-          {state.error && <p className="text-red-600 pb-4"> {state.error}</p>}
+          {error && <p className="text-red-600 pb-4"> {error}</p>}
           <button
             type="submit"
-            className="bg-black h-10 rounded-lg text-white text-base font-bold mb-8 w-full"
+            disabled={isLoading}
+            className="bg-black h-10 rounded-lg text-white text-base font-bold mb-8 w-full disabled:opacity-50"
           >
-            Log in
+            {isLoading ? "Logging in..." : "Log in"}
           </button>
           <button
             type="button"
