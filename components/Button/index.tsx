@@ -1,6 +1,7 @@
 import { ButtonHTMLAttributes } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { ImSpinner2 } from "react-icons/im";
+import { cn } from "@/utils/cn";
 
 const buttonVariants = cva(
   "rounded-lg font-bold transition-colors inline-flex items-center justify-center gap-2",
@@ -64,11 +65,15 @@ export default function Button({
 
   return (
     <button
-      className={`${buttonVariants({
-        variant,
-        size,
-        fullWidth,
-      })} ${isDisabled ? "opacity-50 cursor-not-allowed" : ""} ${className || ""}`}
+      className={cn(
+        buttonVariants({
+          variant,
+          size,
+          fullWidth,
+        }),
+        isDisabled && "opacity-50 cursor-not-allowed",
+        className,
+      )}
       disabled={isDisabled}
       {...props}
     >

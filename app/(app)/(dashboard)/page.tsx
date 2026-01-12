@@ -13,7 +13,7 @@ export default function DashboardPage() {
     <>
       <div className="h-[300px] bg-black"></div>
       <PageSection>
-        <div className="-mt-60">
+        <div className="-mt-60 ">
           <ProductsListPreview />
           <LinkText
             className="block w-fit mx-auto p-5 mb-10"
@@ -25,7 +25,7 @@ export default function DashboardPage() {
             <AdvertisementCard />
           </div>
         </div>
-        <PaymentSection />
+        <PaymentSection className="mb-20" />
       </PageSection>
     </>
   );

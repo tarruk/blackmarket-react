@@ -34,7 +34,7 @@ const NavBar = ({ onSearch }: NavBarProps) => {
 
   return (
     <nav className="z-100 top-0 left-0 right-0 sticky bg-black">
-      <div className="hidden sm:flex sm:gap-4 justify-between items-center max-w-7xl mx-auto gap-4 py-3 px-6 lg:px-20">
+      <div className="hidden sm:flex sm:gap-4 justify-between items-center max-w-7xl mx-auto gap-4 py-3 px-4">
         <Logo className="text-white" />
         <div className="flex gap-4 items-center">
           <Searchbar onSearch={onSearch} />

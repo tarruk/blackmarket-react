@@ -10,6 +10,7 @@ body {
   --color-product-card-border: #636363;
   --color-primary-blue: #2751b9;
   --color-primary-green: #559f21;
+  --color-general-background: #f4f7fa;
 }
 
 @keyframes fade-in {
