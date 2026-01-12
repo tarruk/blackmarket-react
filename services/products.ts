@@ -1,4 +1,5 @@
 import type { Product, ProductsResponse } from "@/types/product";
+import { transformProductsResponse, transformProduct } from "@/types/product";
 import { authStorage } from "@/utils/auth-storage";
 import { ApiError } from "@/utils/api-error";
 
@@ -12,9 +13,14 @@ export interface GetProductsParams {
   description?: string;
   categories?: string[];
   states?: string[];
-  unit_price_min?: string;
-  unit_price_max?: string;
+  unitPriceMin?: string;
+  unitPriceMax?: string;
 }
+
+function camelToSnakeCase(str: string): string {
+  return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+}
+
 function buildQueryString(params: GetProductsParams): string {
   const searchParams = new URLSearchParams();
 
@@ -23,14 +29,16 @@ function buildQueryString(params: GetProductsParams): string {
       return;
     }
 
+    const apiKey = camelToSnakeCase(key);
+
     if (Array.isArray(value)) {
       value.forEach((item) => {
         if (item !== undefined && item !== null && item !== "") {
-          searchParams.append(key, String(item));
+          searchParams.append(apiKey, String(item));
         }
       });
     } else {
-      searchParams.append(key, String(value));
+      searchParams.append(apiKey, String(value));
     }
   });
 
@@ -53,8 +61,8 @@ export async function getProducts(
     throw await ApiError.fromResponse(response);
   }
 
-  const data: ProductsResponse = await response.json();
-  return data;
+  const apiData = await response.json();
+  return transformProductsResponse(apiData);
 }
 
 export async function getProductById(id: number): Promise<Product> {
@@ -69,8 +77,8 @@ export async function getProductById(id: number): Promise<Product> {
     throw await ApiError.fromResponse(response);
   }
 
-  const data = await response.json();
-  return data;
+  const apiData = await response.json();
+  return transformProduct(apiData);
 }
 
 export type { Product, ProductsResponse };

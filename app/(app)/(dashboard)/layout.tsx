@@ -13,6 +13,8 @@ export default function DashboardLayout({
   const handleSearch = (query: string) => {
     if (query.trim()) {
       router.push(`/products?search=${encodeURIComponent(query)}`);
+    } else {
+      router.push("/products");
     }
   };
 

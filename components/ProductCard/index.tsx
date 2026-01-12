@@ -1,8 +1,9 @@
 import Image from "next/image";
 import { Product } from "@/types/product";
-import { FaHeart } from "react-icons/fa";
+
 import { CiHeart } from "react-icons/ci";
 import { IoMdHeart } from "react-icons/io";
+import ProductStateBadge from "../ProductStateBadge";
 
 interface ProductCardProps {
   product: Product;
@@ -16,24 +17,6 @@ export default function ProductCard({
   onToggleFavorite,
 }: ProductCardProps) {
   const imageUrl = product.pictures[0] || "";
-
-  type ProductState = "totaly_new" | "used" | "refurbished";
-
-  const stateColors: Record<ProductState, string> = {
-    totaly_new: "bg-primary-blue text-white",
-    used: "bg-purple-500  text-white",
-    refurbished: "bg-primary-green text-white",
-  };
-
-  const stateLabel: Record<ProductState, string> = {
-    totaly_new: "New",
-    used: "Used",
-    refurbished: "Refurbished",
-  };
-
-  const stateColor =
-    stateColors[product.state as ProductState] || "bg-gray-100 text-gray-800";
-  const stateText = stateLabel[product.state as ProductState] || product.state;
 
   return (
     <div className="group relative bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col w-[264px] h-[377px]">
@@ -57,14 +40,10 @@ export default function ProductCard({
       <div className="h-[129px] flex flex-col p-3 justify-between">
         <div className="flex justify-between">
           <span className="text-xl font-semibold text-gray-900">
-            {product.unit_price}
+            {product.unitPrice}
           </span>
           <div className="">
-            <span
-              className={`px-2 py-1 text-xs font-semibold rounded ${stateColor}`}
-            >
-              {stateText}
-            </span>
+            <ProductStateBadge state={product.state} />
           </div>
         </div>
         <div className="flex justify-between">
@@ -75,7 +54,7 @@ export default function ProductCard({
             onClick={() => onToggleFavorite?.(product.id)}
             aria-label="Toggle favorite"
           >
-            {product.is_favorite ? (
+            {product.isFavorite ? (
               <IoMdHeart />
             ) : (
               <CiHeart className="w-4 h-4" />
